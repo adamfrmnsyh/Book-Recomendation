@@ -49,6 +49,10 @@ Deskripsi variabel Books_df
 | `No. of People rated` | float64   | Jumlah orang yang memberikan rating                            |
 | `URLs`                | object    | Link atau URL ke halaman buku (biasanya untuk referensi)       |
 
+Insight :
+Dataset Books_df terdiri dari 7928 baris dan 10 kolom
+
+
 Deskripsi variabel Genre_df
 
 | Nama Kolom             | Tipe Data | Deskripsi Singkat                                      |
@@ -56,6 +60,10 @@ Deskripsi variabel Genre_df
 | `Title`                | object    | Nama sub-genre                                         |
 | `Number of Sub-genres` | int64     | Jumlah sub-genre yang termasuk dalam kategori tersebut |
 | `URL`                  | object    | Link atau URL referensi untuk sub-genre tersebut       |
+
+Insight :
+Dataset Genre_df terdiri dari 35 baris dan 3 kolom
+
 
 Deskripsi variabel Sub_Genre_df
 
@@ -66,6 +74,8 @@ Deskripsi variabel Sub_Genre_df
 | `No. of Books` | float64   | Jumlah buku yang termasuk dalam genre tersebut                                  |
 | `URLs`         | object    | Link atau URL referensi untuk genre tersebut                                    |
 
+Insight :
+Dataset Sub_Genre_df terdiri dari 329 baris dan 4 kolom
 
 ### Exploratory Data Analysis
 #### 1. Distribusi Genre — Banyak Buku per Genre Utama
@@ -225,18 +235,21 @@ Menggabungkan kolom 'Main Genre', 'Sub Genre', dan 'Author' menjadi satu string 
 </p>
 
 #### Encoding (TF-IDF Vectorization)
-Program di bawah ini digunakan untuk mengubah data teks deskriptif dari buku (genre, subgenre, author) menjadi representasi numerik berbasis TF-IDF (Term Frequency-Inverse Document Frequency), yang diperlukan agar bisa dihitung kemiripan antar buku secara matematis.
+TF-IDF Vectorization
+Untuk mengubah informasi teks seperti genre, sub-genre, dan penulis menjadi format numerik yang bisa diproses oleh sistem rekomendasi, digunakan metode TF-IDF (Term Frequency-Inverse Document Frequency).
+
+TF-IDF merupakan teknik untuk merepresentasikan dokumen teks berdasarkan pentingnya setiap kata di dalam dokumen tersebut dibandingkan dengan seluruh dokumen lainnya. Kata-kata yang sering muncul di satu buku namun jarang muncul di buku lain akan memiliki bobot lebih tinggi.
+
+Dengan TF-IDF, setiap buku direpresentasikan dalam bentuk vektor angka berdasarkan metadata-nya. Hasilnya adalah matriks TF-IDF, yang akan digunakan pada tahap modeling untuk menghitung kemiripan antar buku.
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6de39de8-a57b-4934-a894-218895fce438" width="600"/>
 </p>
 
 ## Modeling
 ### Cosine Similarity
-Model rekomendasi ini dibangun menggunakan pendekatan content-based filtering, yang berfokus pada kesamaan atribut konten antar buku untuk memberikan rekomendasi yang relevan. Sistem ini memanfaatkan informasi dari metadata seperti genre utama (Main Genre), subgenre (Sub Genre), dan penulis (Author) yang telah digabungkan menjadi satu representasi teks.
+Model rekomendasi ini menggunakan pendekatan Content-Based Filtering yang mengandalkan kesamaan konten antar buku. Sistem memanfaatkan metadata seperti genre, sub-genre, dan penulis, yang telah diproses menjadi representasi numerik menggunakan TF-IDF pada tahap Data Preparation.
 
-Untuk mengubah teks tersebut menjadi bentuk numerik yang dapat dihitung, digunakan teknik TF-IDF (Term Frequency-Inverse Document Frequency). Proses ini menghasilkan sebuah matriks TF-IDF, di mana setiap baris mewakili sebuah buku dan setiap kolom mewakili bobot suatu kata kunci penting dalam konteks buku tersebut. TF-IDF membantu menekankan kata-kata yang unik dan relevan dalam menggambarkan isi atau atribut buku.
-
-Selanjutnya, sistem menghitung cosine similarity antar semua pasangan buku menggunakan matriks TF-IDF. Cosine similarity mengukur tingkat kemiripan antara dua buku berdasarkan sudut antar vektor representasi mereka di ruang multidimensi. Nilai similarity berkisar dari 0 (tidak mirip) hingga 1 (sangat mirip). Buku dengan nilai cosine similarity yang tinggi dianggap memiliki atribut yang sangat mirip dan cocok direkomendasikan satu sama lain.
+Kemudian, digunakan cosine similarity untuk mengukur tingkat kemiripan antar buku berdasarkan representasi tersebut. Semakin tinggi nilai cosine similarity, semakin mirip dua buku tersebut, dan sistem akan merekomendasikan buku-buku dengan kemiripan tertinggi.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/9239aa07-efab-4919-8e75-dd82642479d9" width="1000"/>
